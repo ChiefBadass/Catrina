@@ -5,10 +5,15 @@
  */
 package itson.mx.catrina.ui;
 
+import itson.mx.catrina.enumerador.Tipo;
 import itson.mx.catrina.negocio.EstadoCuenta;
+import itson.mx.catrina.negocio.Movimiento;
+import itson.mx.catrina.negocio.Operaciones;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 
@@ -425,6 +430,7 @@ public class Main extends javax.swing.JFrame {
                 String contenido = new String(archivoBytes,StandardCharsets.UTF_8);
 
                 EstadoCuenta estadoCuenta = new EstadoCuenta().deserializar(contenido);
+                Operaciones operaciones = new Operaciones();
                 lblNombre.setText(estadoCuenta.getCliente().getNombre().toUpperCase());
                 lblRfc.setText("RFC: "+estadoCuenta.getCliente().getRfc());
                 lblDomicilio.setText("DOMICILIO: "+estadoCuenta.getCliente().getDomicilio());
@@ -434,9 +440,21 @@ public class Main extends javax.swing.JFrame {
                 lblCuenta.setText("CUENTA: "+estadoCuenta.getCuenta());
                 lblClabe.setText("CLABE: "+estadoCuenta.getClabe());
                 lblMoneda.setText("MONEDA: "+estadoCuenta.getMoneda());
-               
+                lblDepositos.setText("DEPÓSITOS: "+Double.toString(operaciones.sumaDepositos(estadoCuenta)));
+                lblRetiros.setText("RETIROS: "+Double.toString(operaciones.sumaRetiros(estadoCuenta)));
                 DefaultTableModel model = (DefaultTableModel) tblRegistros.getModel();
                 model.setRowCount(0);
+                DateFormat formatoFecha = new SimpleDateFormat("dd 'de' MMM 'de' yyyy");
+                
+                for(Movimiento i : estadoCuenta.getMovimientos()){
+                    
+                    if(i.getTipo()==Tipo.DEPOSITO){
+                        model.addRow(new Object[] { formatoFecha.format(i.getFecha()), i.getDescripcion(), i.getCantidad(),0});
+                    }else if(i.getTipo()==Tipo.RETIRO){
+                        model.addRow(new Object[] { formatoFecha.format(i.getFecha()), i.getDescripcion(), 0,i.getCantidad()});
+                    }
+                
+                }
                              
             }
         }catch(Exception ex){

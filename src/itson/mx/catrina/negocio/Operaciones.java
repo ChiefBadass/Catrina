@@ -5,10 +5,30 @@
  */
 package itson.mx.catrina.negocio;
 
+import itson.mx.catrina.enumerador.Tipo;
+
 /**
  *
  * @author carlo
  */
 public class Operaciones {
-    
+    public double sumaDepositos(EstadoCuenta estadoCuenta){
+        double suma = 0;
+        for(Movimiento i : estadoCuenta.getMovimientos()){
+            if(i.getTipo()==Tipo.DEPOSITO){
+                suma+= i.getCantidad();
+            }
+        }
+        return suma;
+    }
+   public double sumaRetiros(EstadoCuenta estadoCuenta){
+        double suma = 0;
+        for(Movimiento i : estadoCuenta.getMovimientos()){
+            if(i.getTipo()==Tipo.RETIRO){
+                suma+= i.getCantidad();
+            }
+        }
+        return suma;
+    }
+   
 }
