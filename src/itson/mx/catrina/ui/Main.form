@@ -33,7 +33,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel2" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel6" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
-                          <Component id="cbxMes" alignment="0" min="-2" pref="103" max="-2" attributes="0"/>
+                          <Component id="cbxMes" alignment="0" min="-2" pref="102" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -59,8 +59,8 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cbxMes" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnSeleccion" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cbxMes" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="11" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -619,6 +619,14 @@
         <Property name="text" type="java.lang.String" value="Seleccione el archivo a cargar:"/>
       </Properties>
     </Component>
+    <Component class="javax.swing.JButton" name="btnSeleccion">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Seleccione..."/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSeleccionActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JComboBox" name="cbxMes">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -641,14 +649,6 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnSeleccion">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Seleccione..."/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSeleccionActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

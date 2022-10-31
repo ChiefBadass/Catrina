@@ -6,25 +6,20 @@
 package itson.mx.catrina.ui;
 
 import itson.mx.catrina.negocio.EstadoCuenta;
+import itson.mx.catrina.negocio.Movimiento;
 import itson.mx.catrina.negocio.Operaciones;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.swing.JFileChooser;
-import javax.swing.RowFilter;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 /**
- *
- * @author carlo
+ * Clase Main con todo lo relacionado a interfaz de usuario.
+ * @author Carlos Daniel Rebollo Toledo.
  */
 public class Main extends javax.swing.JFrame {
 
@@ -75,8 +70,8 @@ public class Main extends javax.swing.JFrame {
         lblFinalPeriodo = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        cbxMes = new javax.swing.JComboBox<>();
         btnSeleccion = new javax.swing.JButton();
+        cbxMes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -373,14 +368,14 @@ public class Main extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel7.setText("Seleccione el archivo a cargar:");
 
-        cbxMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Novbiembre", "Diciembre" }));
-
         btnSeleccion.setText("Seleccione...");
         btnSeleccion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSeleccionActionPerformed(evt);
             }
         });
+
+        cbxMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Novbiembre", "Diciembre" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -396,7 +391,7 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbxMes, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cbxMes, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnSeleccion)
@@ -415,8 +410,8 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxMes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSeleccion))
+                    .addComponent(btnSeleccion)
+                    .addComponent(cbxMes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -445,8 +440,7 @@ public class Main extends javax.swing.JFrame {
                 Operaciones operaciones = new Operaciones();
                 Locale local = new Locale("es","MX");
                 NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
-                DefaultTableModel modelo = (DefaultTableModel) tblRegistros.getModel();
-                modelo.setRowCount(0);               
+                
                 lblNombre.setText(estadoCuenta.getCliente().getNombre().toUpperCase());
                 lblRfc.setText("RFC: " + estadoCuenta.getCliente().getRfc());
                 lblDomicilio.setText("DOMICILIO: " + estadoCuenta.getCliente().getDomicilio());
@@ -456,17 +450,25 @@ public class Main extends javax.swing.JFrame {
                 lblCuenta.setText("CUENTA: " + estadoCuenta.getCuenta());
                 lblClabe.setText("CLABE: " + estadoCuenta.getClabe());
                 lblMoneda.setText("MONEDA: " + estadoCuenta.getMoneda());
-                String mes = cbxMes.getSelectedItem().toString();
-
-                estadoCuenta.getMovimientos().sort((m1,m2)->m1.getFecha().compareTo(m2.getFecha()));
                 
+                int mes = cbxMes.getSelectedIndex();
+                List<Movimiento> movimientos = new ArrayList<>();
+                for(Movimiento m : estadoCuenta.getMovimientos() ){
+                     if(m.getFecha().getMonth()==mes){
+                        movimientos.add(m);
+                    }
+                }
+                movimientos.sort((m1,m2)->m1.getFecha().compareTo(m2.getFecha()));
                 
-                operaciones.mostrarDatos(modelo, estadoCuenta, formatoMoneda, tblRegistros);               
-                lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumaRetiros(tblRegistros)));
-                lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumaDepositos(tblRegistros)));
-                lblSaldoFinal.setText("SALDO FINAL: " + formatoMoneda.format(operaciones.saldoFinal(tblRegistros)));
-                lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + formatoMoneda.format(operaciones.saldoFinal(tblRegistros)));
-                                 
+                lblSaldoInicial.setText("SALDO INICIAL: "+formatoMoneda.format(operaciones.saldoInicial(mes, estadoCuenta)));
+                double saldoInicial = operaciones.saldoInicial(mes, estadoCuenta);
+                operaciones.mostrarDatos(movimientos, formatoMoneda, tblRegistros, saldoInicial);
+   
+                lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumaRetiros(movimientos)));
+                lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumaDepositos(movimientos)));
+                lblSaldoFinal.setText("SALDO FINAL: " + operaciones.saldoFinal(tblRegistros));
+                lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + operaciones.saldoFinal(tblRegistros));          
+                                           
             }
         }catch(Exception ex){
             System.err.print("Ocurrio un error: " + ex.getMessage());
