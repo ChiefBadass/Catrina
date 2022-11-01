@@ -6,14 +6,11 @@
 package itson.mx.catrina.ui;
 
 import itson.mx.catrina.negocio.EstadoCuenta;
-import itson.mx.catrina.negocio.Movimiento;
 import itson.mx.catrina.negocio.Operaciones;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import javax.swing.JFileChooser;
 
@@ -375,7 +372,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        cbxMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Novbiembre", "Diciembre" }));
+        cbxMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -391,7 +388,7 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbxMes, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(cbxMes, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnSeleccion)
@@ -452,22 +449,14 @@ public class Main extends javax.swing.JFrame {
                 lblMoneda.setText("MONEDA: " + estadoCuenta.getMoneda());
                 
                 int mes = cbxMes.getSelectedIndex();
-                List<Movimiento> movimientos = new ArrayList<>();
-                for(Movimiento m : estadoCuenta.getMovimientos() ){
-                     if(m.getFecha().getMonth()==mes){
-                        movimientos.add(m);
-                    }
-                }
-                movimientos.sort((m1,m2)->m1.getFecha().compareTo(m2.getFecha()));
-                
-                lblSaldoInicial.setText("SALDO INICIAL: "+formatoMoneda.format(operaciones.saldoInicial(mes, estadoCuenta)));
-                double saldoInicial = operaciones.saldoInicial(mes, estadoCuenta);
-                operaciones.mostrarDatos(movimientos, formatoMoneda, tblRegistros, saldoInicial);
-   
-                lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumaRetiros(movimientos)));
-                lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumaDepositos(movimientos)));
-                lblSaldoFinal.setText("SALDO FINAL: " + operaciones.saldoFinal(tblRegistros));
-                lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + operaciones.saldoFinal(tblRegistros));          
+ 
+                lblSaldoInicial.setText("SALDO INICIAL: "+formatoMoneda.format(operaciones.calcularSaldoInicial(mes, estadoCuenta)));                
+                operaciones.mostrarDatos(operaciones.ordenarLista(mes, estadoCuenta), formatoMoneda, tblRegistros, operaciones.calcularSaldoInicial(mes, estadoCuenta));
+                             
+                lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumarRetiros(operaciones.ordenarLista(mes, estadoCuenta))));
+                lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumarDepositos(operaciones.ordenarLista(mes, estadoCuenta))));
+                lblSaldoFinal.setText("SALDO FINAL: " + operaciones.calcularSaldoFinal(tblRegistros));
+                lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + operaciones.calcularSaldoFinal(tblRegistros));          
                                            
             }
         }catch(Exception ex){

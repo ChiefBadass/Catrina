@@ -33,7 +33,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel2" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel6" alignment="0" min="-2" pref="150" max="-2" attributes="0"/>
-                          <Component id="cbxMes" alignment="0" min="-2" pref="102" max="-2" attributes="0"/>
+                          <Component id="cbxMes" alignment="0" min="-2" pref="99" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -641,7 +641,7 @@
             <StringItem index="7" value="Agosto"/>
             <StringItem index="8" value="Septiembre"/>
             <StringItem index="9" value="Octubre"/>
-            <StringItem index="10" value="Novbiembre"/>
+            <StringItem index="10" value="Noviembre"/>
             <StringItem index="11" value="Diciembre"/>
           </StringArray>
         </Property>

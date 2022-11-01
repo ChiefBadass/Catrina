@@ -10,6 +10,7 @@ import itson.mx.catrina.enumerador.Tipo;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -46,7 +47,7 @@ public class Operaciones {
     * @param movimientos Lista de movimientos utilizada como referencia para recorrer datos.
     * @return La suma de todos los depositos.
     */
-   public Double sumaDepositos(List<Movimiento> movimientos ){     
+   public Double sumarDepositos(List<Movimiento> movimientos ){     
         double suma = 0;
         for(Movimiento m : movimientos){
             if(m.getTipo()==Tipo.DEPOSITO){
@@ -60,7 +61,7 @@ public class Operaciones {
     * @param movimientos Lista de movimientos utilizada como referencia para recorrer datos.
     * @return La suma de todos los retiros.
     */
-   public Double sumaRetiros(List<Movimiento> movimientos){
+   public Double sumarRetiros(List<Movimiento> movimientos){
         double suma = 0;     
         for(Movimiento m : movimientos){
             if(m.getTipo()==Tipo.RETIRO){
@@ -74,7 +75,7 @@ public class Operaciones {
     * @param tblRegistros Tabla de datos que sera recorrida.
     * @return El saldo final en tipo String.
     */
-   public String saldoFinal(JTable tblRegistros){
+   public String calcularSaldoFinal(JTable tblRegistros){
        String saldoFinal = null;
        if (tblRegistros.getRowCount()>0){
             for (int i = 0; i < tblRegistros.getRowCount(); i++) {
@@ -91,7 +92,7 @@ public class Operaciones {
     * @param estadoCuenta Sirve para obtener la lista de movimientos.
     * @return Devuelve el saldo inicial en tipo double,
     */
-   public Double saldoInicial(int mes, EstadoCuenta estadoCuenta){
+   public Double calcularSaldoInicial(int mes, EstadoCuenta estadoCuenta){
        double saldoInicial = 0;
        for(Movimiento m : estadoCuenta.getMovimientos()){
            for(int i = 0; i<mes; i++){
@@ -104,4 +105,21 @@ public class Operaciones {
        }
        return saldoInicial;
    } 
+   /**
+    * Organiza por mes una lista.
+    * @param mes Mes seleccionado a mostrar.
+    * @param estadoCuenta Sirve para obtener la lista de movimientos.
+    * @return Devuelve una Lista ordenada por mes.
+    */
+   public List<Movimiento> ordenarLista(int mes, EstadoCuenta estadoCuenta){
+       List<Movimiento> movimientos = new ArrayList<>();
+                for(Movimiento m : estadoCuenta.getMovimientos() ){
+                     if(m.getFecha().getMonth()==mes){
+                        movimientos.add(m);
+                    }
+                }
+                movimientos.sort((m1,m2)->m1.getFecha().compareTo(m2.getFecha()));
+                return movimientos;
+   }
+   
 }
