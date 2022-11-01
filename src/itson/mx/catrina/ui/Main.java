@@ -19,7 +19,7 @@ import javax.swing.JFileChooser;
  * @author Carlos Daniel Rebollo Toledo.
  */
 public class Main extends javax.swing.JFrame {
-
+    EstadoCuenta estadoCuenta = null;
     /**
      * Creates new form Main
      */
@@ -373,6 +373,11 @@ public class Main extends javax.swing.JFrame {
         });
 
         cbxMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+        cbxMes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxMesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -431,13 +436,13 @@ public class Main extends javax.swing.JFrame {
             if(fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
                 File archivo = fileChooser.getSelectedFile();
                 byte archivoBytes[] = Files.readAllBytes(archivo.toPath());
-
+                
                 String contenido = new String(archivoBytes,StandardCharsets.UTF_8);                            
-                EstadoCuenta estadoCuenta = new EstadoCuenta().deserializar(contenido);
+                estadoCuenta = new EstadoCuenta().deserializar(contenido);
                 Operaciones operaciones = new Operaciones();
                 Locale local = new Locale("es","MX");
                 NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
-                
+                               
                 lblNombre.setText(estadoCuenta.getCliente().getNombre().toUpperCase());
                 lblRfc.setText("RFC: " + estadoCuenta.getCliente().getRfc());
                 lblDomicilio.setText("DOMICILIO: " + estadoCuenta.getCliente().getDomicilio());
@@ -446,23 +451,38 @@ public class Main extends javax.swing.JFrame {
                 lblProducto.setText(estadoCuenta.getProducto().toUpperCase());
                 lblCuenta.setText("CUENTA: " + estadoCuenta.getCuenta());
                 lblClabe.setText("CLABE: " + estadoCuenta.getClabe());
-                lblMoneda.setText("MONEDA: " + estadoCuenta.getMoneda());
-                
-                int mes = cbxMes.getSelectedIndex();
- 
-                lblSaldoInicial.setText("SALDO INICIAL: "+formatoMoneda.format(operaciones.calcularSaldoInicial(mes, estadoCuenta)));                
-                operaciones.mostrarDatos(operaciones.ordenarLista(mes, estadoCuenta), formatoMoneda, tblRegistros, operaciones.calcularSaldoInicial(mes, estadoCuenta));
-                             
-                lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumarRetiros(operaciones.ordenarLista(mes, estadoCuenta))));
-                lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumarDepositos(operaciones.ordenarLista(mes, estadoCuenta))));
+                lblMoneda.setText("MONEDA: " + estadoCuenta.getMoneda());    
+                lblSaldoInicial.setText("SALDO INICIAL: "+formatoMoneda.format(0.00));               
+                operaciones.mostrarDatos(estadoCuenta, formatoMoneda, tblRegistros);
+                lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumarRetiros(estadoCuenta.getMovimientos())));
+                lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumarDepositos(estadoCuenta.getMovimientos())));
                 lblSaldoFinal.setText("SALDO FINAL: " + operaciones.calcularSaldoFinal(tblRegistros));
-                lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + operaciones.calcularSaldoFinal(tblRegistros));          
-                                           
+                lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + operaciones.calcularSaldoFinal(tblRegistros));
             }
         }catch(Exception ex){
             System.err.print("Ocurrio un error: " + ex.getMessage());
         }
     }//GEN-LAST:event_btnSeleccionActionPerformed
+
+    private void cbxMesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxMesActionPerformed
+
+        try{
+        Operaciones operaciones = new Operaciones();
+        Locale local = new Locale("es","MX");
+        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(local);
+        int mes = cbxMes.getSelectedIndex();
+                
+        lblSaldoInicial.setText("SALDO INICIAL: "+formatoMoneda.format(operaciones.calcularSaldoInicial(mes, estadoCuenta)));                
+        operaciones.mostrarDatosFiltrados(operaciones.ordenarLista(mes, estadoCuenta), formatoMoneda, tblRegistros, operaciones.calcularSaldoInicial(mes, estadoCuenta));
+                             
+        lblRetiros.setText("RETIROS: "+ formatoMoneda.format(operaciones.sumarRetiros(operaciones.ordenarLista(mes, estadoCuenta))));
+        lblDepositos.setText("DEPÓSITOS: " + formatoMoneda.format(operaciones.sumarDepositos(operaciones.ordenarLista(mes, estadoCuenta))));
+        lblSaldoFinal.setText("SALDO FINAL: " + operaciones.calcularSaldoFinal(tblRegistros));
+        lblFinalPeriodo.setText("SALDO FINAL DEL PERIODO: " + operaciones.calcularSaldoFinal(tblRegistros));
+        }catch(Exception ex){
+            System.err.print("Ocurrio un error: " + ex.getMessage());
+        }            
+    }//GEN-LAST:event_cbxMesActionPerformed
 
     /**
      * @param args the command line arguments

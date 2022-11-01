@@ -21,13 +21,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Operaciones {
     /**
-     * Muestra datos obtenidos de una List. 
+     * Muestra los datos filtrados en un JTable. 
      * @param movimientos Lista de movimientos que sera utilizada para recorrer.
      * @param formatoMoneda Formato representativo para las cantidades numericas.
      * @param tblRegistros La tabla donde seran despledados los valores.
      * @param saldoInicial Dato inicial para obtener el subtotal.
      */
-   public void mostrarDatos(List<Movimiento> movimientos,NumberFormat formatoMoneda, JTable tblRegistros, double saldoInicial){
+   public void mostrarDatosFiltrados(List<Movimiento> movimientos,NumberFormat formatoMoneda, JTable tblRegistros, double saldoInicial){
        DefaultTableModel modelo = (DefaultTableModel) tblRegistros.getModel();
        modelo.setRowCount(0);              
        DateFormat formatoFecha = new SimpleDateFormat("dd/MMMM/yyyy");
@@ -39,6 +39,28 @@ public class Operaciones {
                 }else if(i.getTipo()==Tipo.RETIRO){
                        suma-= i.getCantidad();
                        modelo.addRow(new Object[] { formatoFecha.format(i.getFecha()),i.getDescripcion(), formatoMoneda.format(0), formatoMoneda.format(i.getCantidad()), formatoMoneda.format(suma)});
+                    }
+                }   
+   }
+   /**
+    * Muestra los datos originales en un JTable.
+    * @param estadoCuenta Sirve para obtener la lista de movimientos.
+    * @param formatoMoneda Formato representativo para las cantidades numericas.
+    * @param tblRegistros La tabla donde seran despledados los valores.
+    */
+   public void mostrarDatos(EstadoCuenta estadoCuenta,NumberFormat formatoMoneda, JTable tblRegistros){
+       DefaultTableModel modelo = (DefaultTableModel) tblRegistros.getModel();
+       modelo.setRowCount(0);              
+       DateFormat formatoFecha = new SimpleDateFormat("dd/MMMM/yyyy");
+       estadoCuenta.getMovimientos().sort((m1,m2)->m1.getFecha().compareTo(m2.getFecha()));
+       double subTotal = 0;
+           for(Movimiento i : estadoCuenta.getMovimientos()){                   
+               if(i.getTipo()==Tipo.DEPOSITO){
+                   subTotal += i.getCantidad();
+                   modelo.addRow(new Object[] { formatoFecha.format(i.getFecha()),i.getDescripcion(), formatoMoneda.format(i.getCantidad()), formatoMoneda.format(0), formatoMoneda.format(subTotal)});                        
+                }else if(i.getTipo()==Tipo.RETIRO){
+                       subTotal -= i.getCantidad();
+                       modelo.addRow(new Object[] { formatoFecha.format(i.getFecha()),i.getDescripcion(), formatoMoneda.format(0), formatoMoneda.format(i.getCantidad()), formatoMoneda.format(subTotal)});
                     }
                 }   
    }

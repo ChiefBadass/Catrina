@@ -8,8 +8,8 @@ package itson.mx.catrina.enumerador;
 import com.google.gson.annotations.SerializedName;
 
 /**
- *
- * @author carlo
+ * Enumerador para determinar si es Deposito o Retiro.
+ * @author Carlos Daniel Rebollo Toledo
  */
 public enum Tipo {
     @SerializedName ("1")
